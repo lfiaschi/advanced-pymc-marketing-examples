@@ -1,0 +1,99 @@
+{
+  "dataset_info": {
+    "n_periods": 104,
+    "frequency": "weekly",
+    "date_range": "2020-01-05 to 2021-12-26",
+    "geography": "Local",
+    "seed": 333
+  },
+  "channels": {
+    "Search-Ads": {
+      "pattern": "linear_trend",
+      "base_spend": 100.0,
+      "base_effectiveness": 1.5,
+      "roas": 8.189831504492005,
+      "attribution_pct": 40.75216071251113
+    },
+    "Social-Media": {
+      "pattern": "seasonal",
+      "base_spend": 500.0,
+      "base_effectiveness": 1.2,
+      "roas": 21.948526258564584,
+      "attribution_pct": 14.199994839544994
+    },
+    "Local-Ads": {
+      "pattern": "on_off",
+      "base_spend": 500.0,
+      "base_effectiveness": 0.9,
+      "roas": 3.3196047841792904,
+      "attribution_pct": 26.586397069545008
+    },
+    "Email": {
+      "pattern": "on_off",
+      "base_spend": 100.0,
+      "base_effectiveness": 1.2,
+      "roas": 32.12741055551478,
+      "attribution_pct": 18.461447378398876
+    }
+  },
+  "transformation_parameters": {
+    "channels": {
+      "Search-Ads": {
+        "Local": {
+          "adstock_function": "geometric_adstock",
+          "adstock_params": {
+            "alpha": 0,
+            "l_max": 8
+          },
+          "saturation_function": "hill_function",
+          "saturation_params": {
+            "slope": 1,
+            "kappa": 1
+          }
+        }
+      },
+      "Social-Media": {
+        "Local": {
+          "adstock_function": "geometric_adstock",
+          "adstock_params": {
+            "alpha": 0.2,
+            "l_max": 8
+          },
+          "saturation_function": "hill_function",
+          "saturation_params": {
+            "slope": 1.5,
+            "kappa": 0.8
+          }
+        }
+      },
+      "Local-Ads": {
+        "Local": {
+          "adstock_function": "geometric_adstock",
+          "adstock_params": {
+            "alpha": 0.4,
+            "l_max": 8
+          },
+          "saturation_function": "hill_function",
+          "saturation_params": {
+            "slope": 1,
+            "kappa": 1.5
+          }
+        }
+      },
+      "Email": {
+        "Local": {
+          "adstock_function": "geometric_adstock",
+          "adstock_params": {
+            "alpha": 0.3,
+            "l_max": 8
+          },
+          "saturation_function": "hill_function",
+          "saturation_params": {
+            "slope": 2,
+            "kappa": 0.5
+          }
+        }
+      }
+    }
+  }
+}

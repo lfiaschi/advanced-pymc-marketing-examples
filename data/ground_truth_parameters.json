@@ -1,0 +1,78 @@
+{
+  "transformation_parameters": {
+    "channels": {
+      "Search-Ads": {
+        "Local": {
+          "adstock_function": "geometric_adstock",
+          "adstock_params": {
+            "alpha": 0,
+            "l_max": 8
+          },
+          "saturation_function": "hill_function",
+          "saturation_params": {
+            "slope": 1,
+            "kappa": 1
+          }
+        }
+      },
+      "Social-Media": {
+        "Local": {
+          "adstock_function": "geometric_adstock",
+          "adstock_params": {
+            "alpha": 0.2,
+            "l_max": 8
+          },
+          "saturation_function": "hill_function",
+          "saturation_params": {
+            "slope": 1.5,
+            "kappa": 0.8
+          }
+        }
+      },
+      "Local-Ads": {
+        "Local": {
+          "adstock_function": "geometric_adstock",
+          "adstock_params": {
+            "alpha": 0.4,
+            "l_max": 8
+          },
+          "saturation_function": "hill_function",
+          "saturation_params": {
+            "slope": 1,
+            "kappa": 1.5
+          }
+        }
+      },
+      "Email": {
+        "Local": {
+          "adstock_function": "geometric_adstock",
+          "adstock_params": {
+            "alpha": 0.3,
+            "l_max": 8
+          },
+          "saturation_function": "hill_function",
+          "saturation_params": {
+            "slope": 2,
+            "kappa": 0.5
+          }
+        }
+      }
+    }
+  },
+  "roas_values": {
+    "Local": {
+      "Search-Ads": 8.189831504492005,
+      "Social-Media": 21.948526258564584,
+      "Local-Ads": 3.3196047841792904,
+      "Email": 32.12741055551478
+    }
+  },
+  "attribution_percentages": {
+    "Local": {
+      "Search-Ads": 40.75216071251113,
+      "Social-Media": 14.199994839544994,
+      "Local-Ads": 26.586397069545008,
+      "Email": 18.461447378398876
+    }
+  }
+}
