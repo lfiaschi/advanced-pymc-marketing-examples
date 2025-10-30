@@ -1,0 +1,323 @@
+{
+  "country_level": {
+    "beta_tv": 2.34901424590337,
+    "beta_search": 0.5792603548243223,
+    "gamma_employment": 0.5971532807151039,
+    "gamma_temp": -0.7284544784612038,
+    "adstock_alpha_tv": 0.4026067718983171,
+    "adstock_alpha_search": 0.3347952616861114,
+    "hill_lam_tv": 0.0003587540074520933,
+    "hill_lam_search": 0.18657649912973773,
+    "hill_s": 2.6118528947223796,
+    "fourier_coeffs": [
+      -0.26258490358907377,
+      -0.21402303208811724,
+      -0.3712034185595862,
+      -0.35167190085370365,
+      -1.0698103280381197,
+      -0.3147374804621254
+    ]
+  },
+  "state_level": {
+    "New Jersey": {
+      "beta_tv": 2.4984443626315223,
+      "beta_search": 0.9631835594799911,
+      "gamma_employment": 0.636576582903064,
+      "gamma_temp": -0.7186769452433894
+    },
+    "Connecticut": {
+      "beta_tv": 2.2201553303802566,
+      "beta_search": 0.4892222773084355,
+      "gamma_employment": 0.6918972628197677,
+      "gamma_temp": -0.7051717583602293
+    },
+    "Arizona": {
+      "beta_tv": 2.1901243108347104,
+      "beta_search": 0.4260275256229826,
+      "gamma_employment": 0.5809777420753518,
+      "gamma_temp": -0.7711463827686028
+    },
+    "New York": {
+      "beta_tv": 2.3476322803233383,
+      "beta_search": 0.5448427867495288,
+      "gamma_employment": 0.6360881720407162,
+      "gamma_temp": -0.8296640075750151
+    },
+    "Georgia": {
+      "beta_tv": 2.622012311992788,
+      "beta_search": 0.9960073110571883,
+      "gamma_employment": 0.7165172531433356,
+      "gamma_temp": -0.7109634131768948
+    },
+    "Illinois": {
+      "beta_tv": 2.5694545056405227,
+      "beta_search": 0.4278975533945561,
+      "gamma_employment": 0.4388238593614151,
+      "gamma_temp": -0.6665584451145092
+    },
+    "Tennessee": {
+      "beta_tv": 2.21447883048763,
+      "beta_search": 0.37725864022012034,
+      "gamma_employment": 0.5090941541103932,
+      "gamma_temp": -0.8188986628357292
+    },
+    "Colorado": {
+      "beta_tv": 2.3826214665603755,
+      "beta_search": 0.6665787740312781,
+      "gamma_employment": 0.6859281266744396,
+      "gamma_temp": -0.6569078920525029
+    },
+    "Indiana": {
+      "beta_tv": 2.537763695214554,
+      "beta_search": 0.5481854713086362,
+      "gamma_employment": 0.5348055412166078,
+      "gamma_temp": -0.8491067416250024
+    },
+    "Minnesota": {
+      "beta_tv": 2.623925989849575,
+      "beta_search": 0.552600536633724,
+      "gamma_employment": 0.5561149498464738,
+      "gamma_temp": -0.6340771708851477
+    },
+    "Kansas": {
+      "beta_tv": 2.1244622610394504,
+      "beta_search": 0.7044796677088865,
+      "gamma_employment": 0.6268094191480009,
+      "gamma_temp": -0.8114808685824424
+    },
+    "Maine": {
+      "beta_tv": 2.3300633096463237,
+      "beta_search": 0.7252048848876904,
+      "gamma_employment": 0.676712827104698,
+      "gamma_temp": -0.6088197382305259
+    },
+    "Idaho": {
+      "beta_tv": 2.4335595589017,
+      "beta_search": 1.0851047928683233,
+      "gamma_employment": 0.5051142002083663,
+      "gamma_temp": -0.76034554966242
+    },
+    "Maryland": {
+      "beta_tv": 2.3337982240346835,
+      "beta_search": 0.36644778603561184,
+      "gamma_employment": 0.7014024424490459,
+      "gamma_temp": -0.6561718792111364
+    },
+    "Hawaii": {
+      "beta_tv": 2.3537643286689076,
+      "beta_search": 0.4990978867732965,
+      "gamma_employment": 0.44764789363367025,
+      "gamma_temp": -0.7915951447570374
+    },
+    "Alabama": {
+      "beta_tv": 2.5349420668461766,
+      "beta_search": 0.5474361415675782,
+      "gamma_employment": 0.5544664013111316,
+      "gamma_temp": -0.6883386119392194
+    },
+    "Washington": {
+      "beta_tv": 2.638560909136377,
+      "beta_search": 0.6178278853327641,
+      "gamma_employment": 0.628604570301421,
+      "gamma_temp": -0.6187055077772217
+    },
+    "Mississippi": {
+      "beta_tv": 2.3929025693920782,
+      "beta_search": 0.5328670728576356,
+      "gamma_employment": 0.6644658309925013,
+      "gamma_temp": -0.7489848930766082
+    },
+    "South Carolina": {
+      "beta_tv": 2.25705781487018,
+      "beta_search": 0.7703203978452556,
+      "gamma_employment": 0.5679580136325418,
+      "gamma_temp": -0.9408685622662815
+    },
+    "Virginia": {
+      "beta_tv": 2.4353937318755614,
+      "beta_search": 0.5199328870872783,
+      "gamma_employment": 0.5682395950681096,
+      "gamma_temp": -0.692219572338523
+    },
+    "Rhode Island": {
+      "beta_tv": 2.3074990188156037,
+      "beta_search": 0.6115011793385355,
+      "gamma_employment": 0.3949217873955303,
+      "gamma_temp": -0.8038990231385849
+    },
+    "Texas": {
+      "beta_tv": 2.7000039305681933,
+      "beta_search": 0.5764777341475762,
+      "gamma_employment": 0.42980281851608154,
+      "gamma_temp": -0.8142570252160565
+    },
+    "Arkansas": {
+      "beta_tv": 2.1008677010525725,
+      "beta_search": 0.5946125072067723,
+      "gamma_employment": 0.5538923526603026,
+      "gamma_temp": -0.7811890626561221
+    },
+    "Missouri": {
+      "beta_tv": 2.349998572011221,
+      "beta_search": 0.6509234697393513,
+      "gamma_employment": 0.5712504162412149,
+      "gamma_temp": -0.7744312150702758
+    },
+    "Louisiana": {
+      "beta_tv": 2.2436396908183993,
+      "beta_search": 0.6302334994523188,
+      "gamma_employment": 0.5964152657206466,
+      "gamma_temp": -0.6670707313646915
+    },
+    "North Carolina": {
+      "beta_tv": 2.0615661015297806,
+      "beta_search": 0.46295993893078063,
+      "gamma_employment": 0.6744673663040288,
+      "gamma_temp": -0.7926007059291793
+    },
+    "Ohio": {
+      "beta_tv": 2.6950181756365397,
+      "beta_search": 0.7900411507060504,
+      "gamma_employment": 0.7363858560642942,
+      "gamma_temp": -0.7989057439435854
+    },
+    "Montana": {
+      "beta_tv": 2.368237983049513,
+      "beta_search": 0.5052454824938233,
+      "gamma_employment": 0.6894695415492992,
+      "gamma_temp": -0.5919260821669269
+    },
+    "Michigan": {
+      "beta_tv": 2.567411599812215,
+      "beta_search": 0.5806320066853429,
+      "gamma_employment": 0.5605993510318497,
+      "gamma_temp": -0.6765275398508753
+    },
+    "North Dakota": {
+      "beta_tv": 2.0432958617345434,
+      "beta_search": 0.6597107596816321,
+      "gamma_employment": 0.5056841875889762,
+      "gamma_temp": -0.678810621184265
+    },
+    "Nevada": {
+      "beta_tv": 2.308779901687604,
+      "beta_search": 0.5210206949778301,
+      "gamma_employment": 0.508602043332219,
+      "gamma_temp": -0.7569940805226594
+    },
+    "Delaware": {
+      "beta_tv": 2.4880446955368614,
+      "beta_search": 0.735839446462121,
+      "gamma_employment": 0.6497980968485735,
+      "gamma_temp": -0.6193435565078353
+    },
+    "South Dakota": {
+      "beta_tv": 2.9838049249707033,
+      "beta_search": 0.5305867111499882,
+      "gamma_employment": 0.5765666090055533,
+      "gamma_temp": -0.8436577942759077
+    },
+    "California": {
+      "beta_tv": 2.64669605993178,
+      "beta_search": 0.7741698769639953,
+      "gamma_employment": 0.5104386651101486,
+      "gamma_temp": -0.6790432108203123
+    },
+    "Wyoming": {
+      "beta_tv": 2.6532819451483975,
+      "beta_search": 0.6132035952491535,
+      "gamma_employment": 0.6818934239727678,
+      "gamma_temp": -0.7144678375018861
+    },
+    "New Hampshire": {
+      "beta_tv": 2.0448005228135604,
+      "beta_search": 0.7366624636724521,
+      "gamma_employment": 0.729663846866524,
+      "gamma_temp": -0.6696943932708002
+    },
+    "Pennsylvania": {
+      "beta_tv": 2.1103899304130147,
+      "beta_search": 0.466583441124733,
+      "gamma_employment": 0.48411047540305086,
+      "gamma_temp": -0.6668562896667404
+    },
+    "Oregon": {
+      "beta_tv": 2.6661116265043456,
+      "beta_search": 0.6429332914327899,
+      "gamma_employment": 0.6912068392113049,
+      "gamma_temp": -0.7978657656595538
+    },
+    "Wisconsin": {
+      "beta_tv": 2.3854797090104474,
+      "beta_search": 0.3737796963168778,
+      "gamma_employment": 0.519975205765778,
+      "gamma_temp": -0.6581605946059321
+    },
+    "West Virginia": {
+      "beta_tv": 2.2891156188549178,
+      "beta_search": 0.7606676504273173,
+      "gamma_employment": 0.6509492810843034,
+      "gamma_temp": -0.5097007057362645
+    },
+    "Massachusetts": {
+      "beta_tv": 2.372455603441357,
+      "beta_search": 0.36829956474708997,
+      "gamma_employment": 0.593700315105623,
+      "gamma_temp": -0.805495728546494
+    },
+    "Alaska": {
+      "beta_tv": 2.5933092461066383,
+      "beta_search": 0.5855573644948256,
+      "gamma_employment": 0.5834260990053223,
+      "gamma_temp": -0.7383850695717366
+    },
+    "Iowa": {
+      "beta_tv": 2.5340994503903045,
+      "beta_search": 0.5113910199726218,
+      "gamma_employment": 0.6748582602054647,
+      "gamma_temp": -0.6448087849934985
+    },
+    "New Mexico": {
+      "beta_tv": 2.263478817752025,
+      "beta_search": 0.44035336194260055,
+      "gamma_employment": 0.5458567489515417,
+      "gamma_temp": -0.6716457392320875
+    },
+    "Utah": {
+      "beta_tv": 2.3721339637911445,
+      "beta_search": 0.6737715956144734,
+      "gamma_employment": 0.7734470279454267,
+      "gamma_temp": -0.7099781806255931
+    },
+    "Kentucky": {
+      "beta_tv": 2.1467800230557796,
+      "beta_search": 0.7378738811536787,
+      "gamma_employment": 0.6022893666630674,
+      "gamma_temp": -0.6586587058483676
+    },
+    "Vermont": {
+      "beta_tv": 2.6155638819278044,
+      "beta_search": 0.4354091403603054,
+      "gamma_employment": 0.7353537411322982,
+      "gamma_temp": -0.6560447216646791
+    },
+    "Nebraska": {
+      "beta_tv": 2.198038152782238,
+      "beta_search": 0.6249277228049501,
+      "gamma_employment": 0.6228740298131146,
+      "gamma_temp": -0.7265399333039368
+    },
+    "Florida": {
+      "beta_tv": 2.5669927431064683,
+      "beta_search": 0.7948638040743513,
+      "gamma_employment": 0.5978839179891671,
+      "gamma_temp": -0.6219839722234369
+    },
+    "Oklahoma": {
+      "beta_tv": 2.596064898529398,
+      "beta_search": 0.614104778550783,
+      "gamma_employment": 0.614771372920336,
+      "gamma_temp": -0.820659708194005
+    }
+  }
+}

@@ -6,12 +6,14 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "arviz>=0.21.0",
+    "chronos-forecasting>=0.1.0",
     "ipykernel>=7.0.1",
     "jax>=0.4.35",
     "jaxlib>=0.4.35",
     "jupyter>=1.1.1",
     "matplotlib>=3.10.1",
     "nbformat>=5.10.4",
+    "numpy>=1.24.0",
     "numpyro>=0.19.0",
     "optuna>=4.5.0",
     "pandas>=2.3.3",
@@ -20,5 +22,9 @@ dependencies = [
     "pyarrow>=19.0.0",
     "pymc-marketing>=0.16.0",
     "pytensor>=2.31.3,<2.35.0",
+    "requests>=2.31.0",
     "rich>=14.1.0",
+    "torch>=2.0.0",
+    "transformers>=4.30.0",
+    "us>=3.0.0",
 ]
