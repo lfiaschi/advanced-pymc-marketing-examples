@@ -1,41 +1,63 @@
-# Media Mix Modeling Synthetic Dataset Guide
+# Media Mix Modeling Synthetic Datasets Guide
 
 ## Overview
 
-This dataset contains synthetic data generated for Media Mix Modeling (MMM) experiments and benchmarking. The data simulates a realistic marketing scenario with multiple advertising channels, control variables, and known ground truth parameters for validation purposes.
+This repository contains two synthetic datasets for Media Mix Modeling (MMM) experiments and benchmarking. Each dataset simulates realistic marketing scenarios with known ground truth parameters for validation purposes.
 
-## Available Data Files
+## Available Datasets
+
+### 1. MMM-Simple Dataset
+**Location**: `data/mmm-simple/`
+
+A simple single-region MMM dataset with 4 marketing channels and control variables.
 
 | File | Format | Description | Size |
 |------|--------|-------------|------|
-| `data/mmm_data.csv` | CSV | Main time series data with all variables | 10 KB |
-| `data/baseline_components.csv` | CSV | Baseline sales decomposition | 7.8 KB |
-| `data/channel_contributions.csv` | CSV | Channel contributions after transformations | 8.3 KB |
-| `data/ground_truth_parameters.json` | JSON | True ROAS, attribution, and transformation parameters | 1.8 KB |
-| `data/dataset_summary.json` | JSON | Human-readable dataset summary | 2.3 KB |
+| `data/mmm-simple/mmm_data.csv` | CSV | Main time series data with all variables | 10 KB |
+| `data/mmm-simple/baseline_components.csv` | CSV | Baseline sales decomposition | 7.8 KB |
+| `data/mmm-simple/channel_contributions.csv` | CSV | Channel contributions after transformations | 8.3 KB |
+| `data/mmm-simple/ground_truth_parameters.json` | JSON | True ROAS, attribution, and transformation parameters | 1.8 KB |
+| `data/mmm-simple/dataset_summary.json` | JSON | Human-readable dataset summary | 2.3 KB |
+
+### 2. MMM-Chronos Dataset
+**Location**: `data/mmm-chronos/`
+
+A multi-state hierarchical MMM dataset with temporal covariates (temperature and employment) across 50 US states.
+
+| File | Format | Description | Size |
+|------|--------|-------------|------|
+| `data/mmm-chronos/mmm_chronos_data.csv` | CSV | Main time series with sales, media spend, and covariates | 587 KB |
+| `data/mmm-chronos/media_spend.csv` | CSV | Media spend by state and week (TV and Search) | 376 KB |
+| `data/mmm-chronos/temperature_data.csv` | CSV | Average temperature by state and week | 264 KB |
+| `data/mmm-chronos/employment_data.csv` | CSV | Employment rate by state and week | 279 KB |
+| `data/mmm-chronos/ground_truth_parameters.json` | JSON | True parameters for country and state levels | 10 KB |
 
 All files use portable formats (CSV and JSON) for better interoperability with different tools and languages.
 
-## Dataset Structure
+---
 
-### CSV Files
+## Dataset 1: MMM-Simple
 
-The data is split into three main CSV files for easier access:
+### Overview
+**Location**: `data/mmm-simple/`
+**Shape**: 104 rows × 11 columns
+**Frequency**: Weekly data
+**Date Range**: 2020-01-05 to 2021-12-26 (2 years)
+**Geography**: Single region ("Local")
 
-1. **`mmm_data.csv`**: Main DataFrame with time series observations (104 rows × 11 columns)
-2. **`baseline_components.csv`**: Baseline sales decomposition (104 rows × 4 columns, indexed by date and geo)
-3. **`channel_contributions.csv`**: Channel contributions after transformations (104 rows × 4 columns, indexed by date and geo)
+### Files
 
-### JSON Files
-
-1. **`ground_truth_parameters.json`**: Contains transformation parameters, ROAS values, and attribution percentages
-2. **`dataset_summary.json`**: Contains dataset metadata, channel configurations, and key metrics
+1. **`mmm_data.csv`**: Main DataFrame with time series observations
+2. **`baseline_components.csv`**: Baseline sales decomposition (indexed by date and geo)
+3. **`channel_contributions.csv`**: Channel contributions after transformations (indexed by date and geo)
+4. **`ground_truth_parameters.json`**: Transformation parameters, ROAS values, and attribution percentages
+5. **`dataset_summary.json`**: Dataset metadata, channel configurations, and key metrics
 
 ---
 
-## 1. Main Data
+## 1. Main Data (MMM-Simple)
 
-**File**: `data/mmm_data.csv`
+**File**: `data/mmm-simple/mmm_data.csv`
 **Type**: CSV with header row
 **Shape**: 104 rows × 11 columns
 **Frequency**: Weekly data
@@ -47,20 +69,20 @@ The data is split into three main CSV files for easier access:
 **Python (pandas)**:
 ```python
 import pandas as pd
-df = pd.read_csv('data/mmm_data.csv', parse_dates=['date'])
+df = pd.read_csv('data/mmm-simple/mmm_data.csv', parse_dates=['date'])
 ```
 
 **R**:
 ```r
 library(readr)
-df <- read_csv('data/mmm_data.csv')
+df <- read_csv('data/mmm-simple/mmm_data.csv')
 df$date <- as.Date(df$date)
 ```
 
 **Julia**:
 ```julia
 using CSV, DataFrames, Dates
-df = CSV.read("data/mmm_data.csv", DataFrame)
+df = CSV.read("data/mmm-simple/mmm_data.csv", DataFrame)
 df.date = Date.(df.date)
 ```
 
@@ -136,7 +158,7 @@ This section describes the true parameter values and intermediate calculations u
 
 ### 2.1 Ground Truth Parameters
 
-**File**: `data/ground_truth_parameters.json`
+**File**: `data/mmm-simple/ground_truth_parameters.json`
 
 This JSON file contains the true parameter values for validation purposes.
 
@@ -145,14 +167,14 @@ This JSON file contains the true parameter values for validation purposes.
 **Python**:
 ```python
 import json
-with open('data/ground_truth_parameters.json', 'r') as f:
+with open('data/mmm-simple/ground_truth_parameters.json', 'r') as f:
     ground_truth = json.load(f)
 ```
 
 **R**:
 ```r
 library(jsonlite)
-ground_truth <- fromJSON('data/ground_truth_parameters.json')
+ground_truth <- fromJSON('data/mmm-simple/ground_truth_parameters.json')
 ```
 
 **Structure**:
@@ -185,7 +207,7 @@ ground_truth <- fromJSON('data/ground_truth_parameters.json')
 
 ### 2.2 Baseline Components
 
-**File**: `data/baseline_components.csv`
+**File**: `data/mmm-simple/baseline_components.csv`
 
 CSV file (104 rows × 4 columns) containing decomposition of baseline sales:
 
@@ -201,7 +223,7 @@ CSV file (104 rows × 4 columns) containing decomposition of baseline sales:
 **Loading**:
 ```python
 import pandas as pd
-baseline = pd.read_csv('data/baseline_components.csv', parse_dates=['date'])
+baseline = pd.read_csv('data/mmm-simple/baseline_components.csv', parse_dates=['date'])
 ```
 
 ### 2.3 ROAS Values
@@ -233,7 +255,7 @@ Percentage of non-baseline sales attributed to each channel (available in `groun
 
 ### 2.5 Channel Contributions
 
-**File**: `data/channel_contributions.csv`
+**File**: `data/mmm-simple/channel_contributions.csv`
 
 CSV file (104 rows × 4 columns) containing the contribution of each channel to sales after applying adstock and saturation transformations:
 
@@ -249,7 +271,7 @@ CSV file (104 rows × 4 columns) containing the contribution of each channel to 
 **Loading**:
 ```python
 import pandas as pd
-contributions = pd.read_csv('data/channel_contributions.csv', parse_dates=['date'])
+contributions = pd.read_csv('data/mmm-simple/channel_contributions.csv', parse_dates=['date'])
 ```
 
 These values represent the **actual effect** of each channel's spend on sales, accounting for:
@@ -259,16 +281,16 @@ These values represent the **actual effect** of each channel's spend on sales, a
 
 ---
 
-## 3. Dataset Summary
+## 3. Dataset Summary (MMM-Simple)
 
-**File**: `data/dataset_summary.json`
+**File**: `data/mmm-simple/dataset_summary.json`
 
 This JSON file contains a human-readable summary of the dataset configuration and key metrics.
 
 **Loading**:
 ```python
 import json
-with open('data/dataset_summary.json', 'r') as f:
+with open('data/mmm-simple/dataset_summary.json', 'r') as f:
     summary = json.load(f)
 ```
 
@@ -329,7 +351,7 @@ The synthetic data was generated using the following process:
 
 ## Usage Notes
 
-### Quick Start Example
+### Quick Start Example (MMM-Simple)
 
 **Python**:
 ```python
@@ -337,18 +359,18 @@ import pandas as pd
 import json
 
 # Load main data
-df = pd.read_csv('data/mmm_data.csv', parse_dates=['date'])
+df = pd.read_csv('data/mmm-simple/mmm_data.csv', parse_dates=['date'])
 
 # Load ground truth parameters
-with open('data/ground_truth_parameters.json', 'r') as f:
+with open('data/mmm-simple/ground_truth_parameters.json', 'r') as f:
     ground_truth = json.load(f)
 
 # Load baseline and contributions (for validation)
-baseline = pd.read_csv('data/baseline_components.csv', parse_dates=['date'])
-contributions = pd.read_csv('data/channel_contributions.csv', parse_dates=['date'])
+baseline = pd.read_csv('data/mmm-simple/baseline_components.csv', parse_dates=['date'])
+contributions = pd.read_csv('data/mmm-simple/channel_contributions.csv', parse_dates=['date'])
 
 # Load dataset summary
-with open('data/dataset_summary.json', 'r') as f:
+with open('data/mmm-simple/dataset_summary.json', 'r') as f:
     summary = json.load(f)
 ```
 
@@ -358,10 +380,10 @@ with open('data/dataset_summary.json', 'r') as f:
 - Include `date` for temporal modeling
 - `geo` can be used for hierarchical/pooled modeling (currently single region)
 
-### For Validation
-- Compare estimated ROAS against `ground_truth_parameters.json` → `roas_values`
-- Compare estimated attribution against `ground_truth_parameters.json` → `attribution_percentages`
-- Compare estimated adstock/saturation parameters against `ground_truth_parameters.json` → `transformation_parameters`
+### For Validation (MMM-Simple)
+- Compare estimated ROAS against `data/mmm-simple/ground_truth_parameters.json` → `roas_values`
+- Compare estimated attribution against `data/mmm-simple/ground_truth_parameters.json` → `attribution_percentages`
+- Compare estimated adstock/saturation parameters against `data/mmm-simple/ground_truth_parameters.json` → `transformation_parameters`
 - Decompose predictions and compare against `baseline_components.csv` and `channel_contributions.csv`
 
 ### For Benchmarking
@@ -426,8 +448,13 @@ Use `readr` for CSV files and `jsonlite` for JSON files:
 library(readr)
 library(jsonlite)
 
-mmm_data <- read_csv('data/mmm_data.csv')
-ground_truth <- fromJSON('data/ground_truth_parameters.json')
+# MMM-Simple
+mmm_data <- read_csv('data/mmm-simple/mmm_data.csv')
+ground_truth <- fromJSON('data/mmm-simple/ground_truth_parameters.json')
+
+# MMM-Chronos
+chronos_data <- read_csv('data/mmm-chronos/mmm_chronos_data.csv')
+chronos_truth <- fromJSON('data/mmm-chronos/ground_truth_parameters.json')
 ```
 
 ### Julia
@@ -435,8 +462,13 @@ Use `CSV.jl` and `JSON.jl`:
 ```julia
 using CSV, DataFrames, JSON
 
-mmm_data = CSV.read("data/mmm_data.csv", DataFrame)
-ground_truth = JSON.parsefile("data/ground_truth_parameters.json")
+# MMM-Simple
+mmm_data = CSV.read("data/mmm-simple/mmm_data.csv", DataFrame)
+ground_truth = JSON.parsefile("data/mmm-simple/ground_truth_parameters.json")
+
+# MMM-Chronos
+chronos_data = CSV.read("data/mmm-chronos/mmm_chronos_data.csv", DataFrame)
+chronos_truth = JSON.parsefile("data/mmm-chronos/ground_truth_parameters.json")
 ```
 
 ### Other Languages
@@ -453,14 +485,127 @@ For more details on the data generation process, see:
 
 ---
 
+---
+
+## Dataset 2: MMM-Chronos
+
+### Overview
+**Location**: `data/mmm-chronos/`
+**Shape**: 5,200 rows × 7 columns (50 states × 104 weeks)
+**Frequency**: Weekly data
+**Date Range**: 2020-01-12 to 2022-01-30 (2 years)
+**Geography**: 50 US states (hierarchical structure)
+
+### Files
+
+1. **`mmm_chronos_data.csv`**: Main time series with sales, media spend, and covariates
+2. **`media_spend.csv`**: Media spend by state and week (TV and Search channels)
+3. **`temperature_data.csv`**: Average temperature by state and week
+4. **`employment_data.csv`**: Employment rate by state and week
+5. **`ground_truth_parameters.json`**: True parameters at country and state levels
+
+### Main Data (MMM-Chronos)
+
+**File**: `data/mmm-chronos/mmm_chronos_data.csv`
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `week` | datetime | Week start date |
+| `state` | object | US state name (50 states) |
+| `avg_temp` | float64 | Average temperature for the week |
+| `avg_employment` | float64 | Employment rate (0-1 scale) |
+| `tv_spend` | float64 | TV advertising spend |
+| `search_spend` | float64 | Search advertising spend |
+| `y` | float64 | **Target variable (sales)** |
+
+**Loading the Data**:
+```python
+import pandas as pd
+df = pd.read_csv('data/mmm-chronos/mmm_chronos_data.csv', parse_dates=['week'])
+```
+
+### Ground Truth Parameters (MMM-Chronos)
+
+**File**: `data/mmm-chronos/ground_truth_parameters.json`
+
+Contains hierarchical parameters:
+- **Country-level parameters**: Shared across all states
+  - `beta_tv`, `beta_search`: Media channel coefficients
+  - `gamma_employment`, `gamma_temp`: Covariate coefficients
+  - `adstock_alpha_tv`, `adstock_alpha_search`: Adstock decay rates
+  - `hill_lam_tv`, `hill_lam_search`, `hill_s`: Saturation parameters
+  - `fourier_coeffs`: Seasonal components
+
+- **State-level parameters**: State-specific variations
+  - Each state has its own `beta_tv`, `beta_search`, `gamma_employment`, `gamma_temp`
+
+**Loading**:
+```python
+import json
+with open('data/mmm-chronos/ground_truth_parameters.json', 'r') as f:
+    ground_truth = json.load(f)
+
+# Access country-level parameters
+country_params = ground_truth['country_level']
+
+# Access state-specific parameters
+nj_params = ground_truth['state_level']['New Jersey']
+```
+
+### Quick Start Example (MMM-Chronos)
+
+**Python**:
+```python
+import pandas as pd
+import json
+
+# Load main data
+df = pd.read_csv('data/mmm-chronos/mmm_chronos_data.csv', parse_dates=['week'])
+
+# Load ground truth parameters
+with open('data/mmm-chronos/ground_truth_parameters.json', 'r') as f:
+    ground_truth = json.load(f)
+
+# Load auxiliary data files
+media = pd.read_csv('data/mmm-chronos/media_spend.csv', parse_dates=['week'])
+temp = pd.read_csv('data/mmm-chronos/temperature_data.csv', parse_dates=['week'])
+employment = pd.read_csv('data/mmm-chronos/employment_data.csv', parse_dates=['week'])
+```
+
+### For Model Training (MMM-Chronos)
+- Use `tv_spend` and `search_spend` as media features
+- Use `avg_temp` and `avg_employment` as control covariates
+- Use `y` as the target variable
+- Use `state` for hierarchical/pooled modeling across 50 states
+- Use `week` for temporal modeling
+
+### For Validation (MMM-Chronos)
+- Compare estimated parameters against `data/mmm-chronos/ground_truth_parameters.json`
+- Validate both country-level and state-level parameter recovery
+- Test hierarchical modeling assumptions
+
+---
+
 ## File Manifest
 
+### MMM-Simple Dataset
 | File | Size | Format | Description |
 |------|------|--------|-------------|
-| `data/mmm_data.csv` | 10 KB | CSV | Main time series data |
-| `data/baseline_components.csv` | 7.8 KB | CSV | Baseline decomposition |
-| `data/channel_contributions.csv` | 8.3 KB | CSV | Channel contributions |
-| `data/ground_truth_parameters.json` | 1.8 KB | JSON | True parameters for validation |
-| `data/dataset_summary.json` | 2.3 KB | JSON | Dataset metadata and config |
+| `data/mmm-simple/mmm_data.csv` | 10 KB | CSV | Main time series data |
+| `data/mmm-simple/baseline_components.csv` | 7.8 KB | CSV | Baseline decomposition |
+| `data/mmm-simple/channel_contributions.csv` | 8.3 KB | CSV | Channel contributions |
+| `data/mmm-simple/ground_truth_parameters.json` | 1.8 KB | JSON | True parameters for validation |
+| `data/mmm-simple/dataset_summary.json` | 2.3 KB | JSON | Dataset metadata and config |
 
-**Total Data Package**: ~30 KB
+**Total**: ~30 KB
+
+### MMM-Chronos Dataset
+| File | Size | Format | Description |
+|------|------|--------|-------------|
+| `data/mmm-chronos/mmm_chronos_data.csv` | 587 KB | CSV | Main time series with all variables |
+| `data/mmm-chronos/media_spend.csv` | 376 KB | CSV | Media spend by state and week |
+| `data/mmm-chronos/temperature_data.csv` | 264 KB | CSV | Temperature data by state and week |
+| `data/mmm-chronos/employment_data.csv` | 279 KB | CSV | Employment data by state and week |
+| `data/mmm-chronos/ground_truth_parameters.json` | 10 KB | JSON | Hierarchical parameters |
+
+**Total**: ~1.5 MB
