@@ -1,4 +1,4 @@
-# Stop Agonizing Over MMM Priors: A Data-Driven Analysis and Playbook to Set Them
+# Stop Agonizing Over MMM Priors: A Data-Driven Analysis and Playbook on How to Set Them
 
 You’ve been there—three hours deep into debugging why your Media Mix Model won’t converge, another hour tweaking priors, and your stakeholders asking why the model recommends spending $0 on your top-performing channel. Meanwhile, your posterior plots look like abstract art instead of inference.
 
