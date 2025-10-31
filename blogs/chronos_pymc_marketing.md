@@ -54,7 +54,7 @@ The beauty of this approach is that each model does what it does best. The MMM m
 
 ## A Realistic Testing Ground
 
-To demonstrate this approach, we constructed a dataset that mirrors real-world complexity. While the sales figures are simulated using known MMM dynamics, the control variables—temperature and employment rates—come from actual U.S. historical data across 50 states over 4 years (2020-2023). The media spend patterns and effect sizes are calibrated to match typical CPG marketing scenarios, with TV spending ranging from $10,000 to $20,000 weekly per state and search spend between $2,000 and $8,000.
+To demonstrate this approach, we constructed a hierarchical dataset that mirrors real-world complexity. While the sales figures are simulated using known MMM dynamics, the control variables—temperature and employment rates—come from actual U.S. historical data across 50 states over 4 years (2020-2023). The media spend patterns and effect sizes are calibrated to match typical CPG marketing scenarios, with TV spending ranging from $10,000 to $20,000 weekly per state and search spend between $2,000 and $8,000.
 
 This gives us 10,400 observations (50 states × 208 weeks) with realistic seasonality, geographic variation, and the kinds of correlations you'd encounter in production. The ground truth allows us to rigorously evaluate how forecast uncertainty propagates through the causal model.
 
