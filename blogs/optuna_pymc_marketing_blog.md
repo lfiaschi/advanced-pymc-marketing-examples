@@ -72,8 +72,12 @@ crps_score = crps(y_true, y_pred)
 
 Let's compare the metrics available for evaluating MMM performance:
 
-![Metrics Comparison Table](images/metrics_comparison_table.png)
-*Table 1: Comparison of evaluation metrics for MMM - CRPS uniquely evaluates both accuracy and uncertainty calibration*
+| Metric | What it Measures | Pros | Cons | Best For |
+|:-------|:-----------------|:-----|:------|:----------|
+| **RMSE** | Point estimate error | • Simple to interpret  <br> • Widely understood | • Ignores uncertainty  <br> • Sensitive to outliers | Deterministic models |
+| **MAPE** | Percentage error | • Scale-independent  <br> • Business-friendly | • Undefined at zero  <br> • Ignores uncertainty | Point forecasts |
+| **WAIC** | In-sample fit (penalized) | • Accounts for complexity  <br> • Bayesian native | • Not true holdout  <br> • Hard to interpret | Model comparison |
+| **CRPS** | Full predictive distribution | • Proper scoring rule  <br> • True generalization | • Less intuitive  <br> • Computationally heavier | Probabilistic forecasts |
 
 The key insight: **CRPS is a proper scoring rule**, meaning it's minimized when your predictive distribution matches the true data-generating process. You can't game it by predicting overly wide or narrow intervals—it naturally balances accuracy and appropriate uncertainty.
 
