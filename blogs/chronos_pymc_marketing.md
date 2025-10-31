@@ -121,27 +121,9 @@ Implementing this architecture in production requires thoughtful engineering. He
 ### 1. **Model Training Cadence**
 - Retrain MMM monthly or quarterly as new data arrives
 - Update control forecasts weekly for rolling planning horizons
-- Cache Chronos2 predictions to minimize inference costs
 
-### 2. **Computational Considerations**
-```python
-# MMM training (one-time or periodic)
-sampler_config = {
-    "draws": 1000,
-    "tune": 1000,
-    "chains": 4,
-    "target_accept": 0.9,  # Higher for complex hierarchies
-}
 
-# Control forecasting (frequent)
-chronos_config = {
-    "batch_size": 32,  # Process multiple series in parallel
-    "num_samples": 100,  # Generate prediction intervals
-    "context_length": 104,  # 2 years of weekly data
-}
-```
-
-### 3. **Uncertainty Quantification**
+### 2. **Uncertainty Quantification**
 Rather than point forecasts, generate prediction intervals for controls and propagate them through the MMM:
 
 ```python
@@ -159,15 +141,12 @@ for sample in control_samples:
     predictions_with_uncertainty.append(pred)
 ```
 
-### 4. **Monitoring and Validation**
+### 3. **Monitoring and Validation**
 Track these metrics in production:
 - Control forecast accuracy (MAPE by variable)
 - MMM prediction error on recent holdout data
 - Divergence between planned and actual media spend
 - Posterior predictive checks for MMM assumptions
-
-![MAPE Degradation Analysis](images/chronos_mmm/04_mape_degradation_curve.png)
-*Figure 4: The practitioner's rule in action: how control forecast errors translate to MMM prediction errors. The curve shows that even with 10% MAPE in economic forecasts, sales predictions only degrade by 2-3% when controls explain 20-30% of variance—making this approach viable for real-world planning.*
 
 ## When This Architecture Shines
 
@@ -179,19 +158,6 @@ This hybrid approach excels in specific scenarios:
 
 **Scenario Analysis**: Generate multiple control scenarios (optimistic/pessimistic economic conditions) and see how optimal media allocation changes.
 
-**Regulated Industries**: Where you need both prediction accuracy AND interpretable causal effects for compliance.
-
-## Implementation Considerations
-
-The approach isn't without trade-offs. Here's what we've learned from production deployments:
-
-**Data Requirements**: You need sufficient historical data for both MMM training (minimum 2 years) and control forecasting (at least 100 time points for Chronos2).
-
-**Computational Resources**: While inference is fast, initial MMM training on hierarchical data can take 4-6 hours on modern hardware. Plan accordingly.
-
-**Model Versioning**: Maintain clear lineage between MMM versions and their corresponding control forecasts. Mismatched models can introduce subtle errors.
-
-**Forecast Horizons**: Accuracy degrades with forecast length. For horizons beyond 6 months, consider ensemble approaches or scenario planning rather than point predictions.
 
 ## The Path Forward
 
