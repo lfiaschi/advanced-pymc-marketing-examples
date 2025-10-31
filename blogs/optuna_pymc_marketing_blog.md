@@ -1,4 +1,4 @@
-# Optimizing Hyperparameters of Causal MMM with Bayesian Optimization: Combining Optuna with PyMC-Marketing
+# Combining Optuna with PyMC-Marketing: Causal MMM Hyperparameters Optimization with Bayesian Optimization
 
 You've built a Bayesian Media Mix Model. You've tried 5 different Fourier orders for seasonality. You've tested adstock lags from 4 to 12 weeks. Yet your model still claims your best-performing channel should get zero budget, and your posterior predictive checks look terrible. Your stakeholders are questioning whether this "sophisticated" Bayesian approach is worth the complexity.
 
