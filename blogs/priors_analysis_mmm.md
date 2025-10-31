@@ -1,28 +1,31 @@
 # Stop Agonizing Over MMM Priors: A Data-Driven Analysis and Playbook to Set Them
 
-You've been there. Three hours into debugging why your Media Mix Model won't converge. Another hour tweaking prior distributions. Your stakeholders are asking why the model says to spend $0 on your best-performing channel. Meanwhile, your posterior distributions look like abstract art rather than statistical inference.
+You’ve been there—three hours deep into debugging why your Media Mix Model won’t converge, another hour tweaking priors, and your stakeholders asking why the model recommends spending $0 on your top-performing channel. Meanwhile, your posterior plots look like abstract art instead of inference.
 
-Here's the uncomfortable truth: priors in MMM aren't just mathematical niceties—they're make-or-break decisions that affect everything from computational efficiency to business strategy. But which priors actually matter? Where should you invest your limited time? And how can you systematically validate your choices?
+Here’s the truth: priors in MMM aren’t just statistical formalities—they’re the backbone of model stability, interpretability, and business credibility. But which priors actually matter? Where should you invest effort? And how can you set them in a principled, data-driven way?
 
-We ran 14 different prior configurations through a comprehensive sensitivity analysis to answer these questions once and for all. What we found challenges conventional wisdom: transformation parameters dominate, effect sizes follow, and some priors you've been agonizing over barely matter at all.
+To find out, we ran a large-scale sensitivity analysis across 14 prior configurations and six parameter families on a realistic synthetic datasets with known ground truth. The results challenge common intuition: transformation parameters dominate, effect sizes come next, and several priors you’ve been agonizing over barely move the needle.
 
 ## The Prior Problem No One Talks About
 
-Media Mix Models are notoriously difficult to identify. You're trying to disentangle the effects of multiple marketing channels that often move together, estimate carry-over effects that extend beyond your observation window, and quantify diminishing returns you've never directly measured. In this high-dimensional, correlated space, priors aren't just helpful—they're essential for:
+Media Mix Models are inherently hard to identify. You’re trying to disentangle correlated marketing channels, capture delayed effects beyond the observation window, and quantify saturation you can’t directly observe. In such a high-dimensional, noisy system, priors serve three purposes:
 
 1. **Computational tractability**: Wrong priors = hours of wasted compute on models that won't converge
 2. **Parameter identifiability**: Distinguishing signal from noise when channels are correlated
 3. **Business alignment**: Encoding domain knowledge about marketing effectiveness
 
-Yet most practitioners either stick with defaults (risking misalignment with their specific context) or engage in ad-hoc tweaking without systematic validation. There's a better way.
+Yet most practitioners either rely on defaults or tweak priors blindly until the model “behaves.” The result is often fragile inference and poor reproducibility.
 
-## A Systematic Approach to Prior Sensitivity
+## Domain Knowledge Should Guide Priors (When Available)
 
-We designed a comprehensive experiment to quantify exactly how different priors affect MMM estimates. Using 104 weeks of synthetic data with known ground truth, we systematically varied priors for every major model component.
+Ideally, priors should reflect domain knowledge—for example, that brand campaigns have longer carry-over or that search ads saturate quickly. In practice, though, this information is often incomplete. When that happens, you should at least be aware which priors matter most so you can interpret results responsibly.
 
-### The Experimental Design
+This is not an argument for “prior tuning” to optimize predictive accuracy. Over-adjusting priors risks hiding model misspecification under the illusion of better fit. Instead, the goal is to understand where prior assumptions exert influence and where the data can safely speak for itself.
 
-Our analysis employed a One-at-a-Time (OAT) sensitivity approach, testing 14 different prior specifications across 6 parameter categories:
+## How We Tested Prior Sensitivity
+
+We used 104 weeks of synthetic data with known ground truth and systematically varied priors for each key component of a typical MMM
+
 
 ```python
 # Core parameters we tested
@@ -43,45 +46,21 @@ prior_specs = {
 }
 ```
 
-### Quantifying Sensitivity: Beyond Visual Inspection
+For each parameter, we compared tight, default, and loose priors and quantified sensitivity using:
 
-Instead of relying on subjective visual comparisons, we computed three quantitative metrics:
+- Coefficient of Variation (CV%) – relative variation in ROAS across prior settings.
+- Prior Sensitivity Index (PSI) – between-prior variance divided by within-posterior variance.
+- Posterior Contraction – how much data reduces prior uncertainty.
 
-1. **Coefficient of Variation (CV%)**: How much do ROAS estimates vary across different priors?
-2. **Prior Sensitivity Index (PSI)**: Ratio of between-prior variance to within-posterior variance
-3. **Posterior Contraction**: How much does data reduce prior uncertainty?
+## What We Found: The Hierarchy of Prior Importance
 
-```python
-def compute_prior_sensitivity_index(results, parameter):
-    """
-    PSI = Between-prior variance / Within-posterior variance
-    High PSI (>0.1) means posteriors depend strongly on prior choice
-    """
-    posterior_means = []
-    posterior_variances = []
-
-    for result in results.values():
-        if result.get("success") and parameter in result["mmm"].idata.posterior:
-            samples = result["mmm"].idata.posterior[parameter].values.flatten()
-            posterior_means.append(np.mean(samples))
-            posterior_variances.append(np.var(samples))
-
-    between_var = np.var(posterior_means)
-    avg_within_var = np.mean(posterior_variances)
-    psi = between_var / avg_within_var if avg_within_var > 0 else 0.0
-
-    return psi
-```
-
-## The Surprising Hierarchy of Prior Importance
-
-Our analysis revealed a clear hierarchy of which priors deserve your attention:
+Our analysis revealed a clear hierarchy of which priors deserve attention:
 
 ![Parameter Sensitivity Ranking](../blog_figures/parameter_sensitivity_ranking.png)
 
-### Finding 1: Transformation Parameters Rule (But It's Complicated)
+### Finding 1: Transformation Parameters Drive Most of the Variance
 
-**Transformation parameters showed 7x higher sensitivity than effect sizes**—but before you panic, let's understand what this really means:
+Adstock and saturation priors were 7× more influential than effect sizes:
 
 - **Adstock (carryover)** and **saturation point** parameters had CV% of 1.77%
 - Effect size (saturation_beta) showed only 0.25% CV%
@@ -93,30 +72,23 @@ While 1.77% might seem low in absolute terms, consider this: for a company spend
 2. **Channel attribution**: High carryover attributes current sales to past spend
 3. **Optimization recommendations**: Saturation points determine where to cut spend
 
-### Finding 2: The 20% Error Nobody Wants to Discuss
+### Finding 2: The 20 % ROAS Error That Priors Can’t Fix
 
-Here's what the rosy "priors don't matter" narrative misses: every single model configuration showed 20-22% ROAS error versus ground truth.
+Every configuration produced ~20 % ROAS error versus ground truth. The culprit wasn’t the priors—it was the model structure. The ground truth used a Hill saturation curve; our model used logistic. No amount of prior tweaking could remove that structural bias.
+
+The lesson is that if your functional form doesn’t match business dynamics, better priors won’t save you.
 
 ![ROAS Error Distribution](../blog_figures/roas_error_distribution.png)
 
-This isn't prior sensitivity—it's systematic bias. The true insight? **Model structure matters more than prior choice**. Our ground truth used Hill saturation curves while our models assumed logistic saturation. This functional mismatch created irreducible error that no amount of prior tuning could fix.
-
-The lesson: before obsessing over priors, ensure your model structure aligns with your market dynamics.
-
 ### Finding 3: Strong Data Doesn't Eliminate Prior Importance
 
-With 104 weeks of data, we observed strong data learning across all parameters:
+With 104 clean weeks, data dominated (PSI < 0.1). But on real data noise, collinearity, and shifting effects make priors far more influential. With 52 weeks or correlated channels, transformation priors can determine whether the model converges at all.
 
 ![Data Learning Strength](../blog_figures/data_learning_strength.png)
 
 - Prior Sensitivity Index < 0.1 (data dominates)
 - Posterior contraction < 0.5 (variance reduced by >50%)
 - Convergence achieved for all specifications
-
-But here's the critical nuance: **most real MMM projects have 52-78 weeks of messy, correlated data**. Our synthetic data had:
-- Perfect measurement (no noise in recorded spend)
-- Independent channel variation (no multicollinearity)
-- Consistent effects over time (no market shocks)
 
 In practice, with limited and imperfect data, prior choice becomes exponentially more important.
 
@@ -215,18 +187,19 @@ Run at least 3 specifications:
 Compare:
 - ROAS estimates (should be within 20% of each other)
 - Convergence diagnostics (R-hat < 1.01, ESS > 400)
-- Out-of-sample predictions (use last 4 weeks as holdout)
+- Out-of-sample predictions (use last 15% of the weeks as holdout)
+
+This allow identifying which priors affect the covergence and the accuracy of your models.
 
 ### Step 3: Posterior Predictive Checks
 ```python
 # After fitting, validate model behavior
 mmm.sample_posterior_predictive()
-
-# Check for:
-# - Prediction intervals covering actual data
-# - No systematic over/under prediction
-# - Reasonable uncertainty bounds
 ```
+Check for:
+- Prediction intervals covering actual data
+- No systematic over/under prediction
+- Reasonable accuracy measured with CRPS, R2, RMSE, Durbin-Watson
 
 ## When Prior Choice Becomes Critical
 
@@ -234,7 +207,7 @@ Our analysis identified specific scenarios where prior specification can make or
 
 ### Red Flag Scenarios
 
-1. **Limited Data** (< 52 weeks)
+1. **Limited Data** (< 104 weeks)
    - Prior influence increases exponentially
    - Focus on transformation parameters
    - Consider informative priors from previous campaigns
@@ -249,26 +222,16 @@ Our analysis identified specific scenarios where prior specification can make or
 
 4. **Computational Constraints**
    - Wrong transformation priors = 10x longer sampling
-   - Tight computational budgets require careful prior tuning
 
-## The Uncomfortable Truth About Model Structure
+## Focus as Much on Structure as on Priors
 
-Our analysis revealed that all prior specifications achieved 20-22% ROAS error—not because of prior sensitivity, but because of model-data mismatch. The ground truth used Hill saturation:
+Our 20 % systematic error came from model mismatch, not from prior misspecification. The takeaway:
 
-```python
-# Ground truth (Hill)
-y = x^s / (k^s + x^s)
+- Verify that your saturation and adstock functions match real market dynamics.
+- Consider time-varying or delayed effects where appropriate.
+- Use priors to stabilize inference and encode business assumptions, not to improve accuracy
 
-# Our model (Logistic)
-y = (1 - exp(-lam * x))
-```
-
-This structural difference created systematic bias that no prior could fix. The implication? **Spend as much time validating model structure as you do on priors.**
-
-Consider:
-- Do your saturation curves match known business dynamics?
-- Is geometric adstock appropriate, or do you need delayed effects?
-- Are effects really constant over time, or do you need time-varying parameters?
+The good news is that these model specifications can be tuned with other model selection techniques [BLOG POST LINK TO OPTUNA]
 
 ## Practical Recommendations
 
@@ -291,47 +254,14 @@ Based on our comprehensive analysis, here's your action plan:
    - Document which priors were tested
    - Report the range of estimates to stakeholders
 
-### For Stakeholders
-
-1. **Ask about prior sensitivity**
-   - "How much do results change with different priors?"
-   - "Which assumptions drive the recommendations?"
-   - "What would it take for the decision to change?"
-
-2. **Demand validation**
-   - Prior predictive checks (do assumptions make sense?)
-   - Sensitivity analysis (are results robust?)
-   - Out-of-sample testing (does it predict?)
-
-3. **Focus on decisions, not point estimates**
-   - Will different priors change your budget allocation?
-   - Is the rank order of channels stable?
-   - Are the optimization recommendations consistent?
-
 ## The Path Forward
 
-Our analysis demonstrates that while MMM is more robust to prior choice than many fear (with sufficient data), priors remain critical for:
+Priors don’t make or break your MMM alone—model design and data quality do. But setting them systematically can be the difference between robust insight and wasted computation.
 
-1. **Computational efficiency** (wrong priors = convergence failures)
-2. **Parameter identifiability** (especially transformation parameters)
-3. **Business alignment** (encoding domain knowledge)
+Remember:
 
-The key insight isn't that "priors don't matter"—it's that there's a clear hierarchy of importance. Focus your limited time on transformation parameters, validate systematically, and ensure your model structure matches your market reality.
+- Use business knowledge where possible.
+- Know which priors matter most expecially when that knowledge is missing.
+- Validate, document, and communicate impact to priors and assumptions transparently.
 
-Remember: in the high-stakes world of marketing optimization, a systematic approach to prior specification isn't just good practice—it's the difference between insights you can trust and expensive mistakes.
-
-## Next Steps
-
-Ready to implement systematic prior analysis in your MMM? Here's how:
-
-1. **Download our prior sensitivity analysis code**: [GitHub repository link]
-2. **Explore PyMC-Marketing's prior diagnostic tools**: Built-in utilities for prior predictive checks
-3. **Get expert guidance**: Schedule a consultation with PyMC Labs for complex MMM scenarios
-
-The goal isn't to eliminate uncertainty—it's to quantify it, understand it, and make robust decisions despite it. With the framework we've outlined, you can stop agonizing over priors and start setting them systematically.
-
----
-
-*This analysis used PyMC-Marketing v0.9.0 with synthetic data generated from known ground truth. Code and data are available for reproduction. For custom MMM solutions and prior elicitation workshops, contact PyMC Labs.*
-
-![Key Takeaways](../blog_figures/key_takeaways.png)
+Stop agonizing over every prior. Focus on the ones that matter, test them rigorously, and let your data—and your domain expertise—work together.
