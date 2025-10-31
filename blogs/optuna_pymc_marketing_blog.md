@@ -325,9 +325,8 @@ From our synthetic data optimization:
 
 **Critical Interpretation Notes**:
 1. These "optimal" parameters are specific to our synthetic dataset and single test period
-2. Parameter importance analysis with only 20 trials should be viewed skeptically
-3. The difference between the best (294.71) and median (~310) CRPS is modest
-4. In real applications, validate that different hyperparameters lead to meaningfully different business decisions
+2. The difference between the best (294.71) and median (~310) CRPS is modest in this dataset
+3. In real applications, validate that different hyperparameters lead to meaningfully different business decisions (differences ~5 can be ignored)
 
 ### Step 6: Final Model with Optimal Parameters
 
@@ -385,7 +384,7 @@ Key observations:
 | Train   | 265.93 | In-sample performance                        |
 | Test    | 260.06 | Out-of-sample performance                    |
 
-The test and training CRPS values are essentially identical (difference of ~5 points on a scale of 260+), indicating good generalization without overfitting. In practice, CRPS differences less than 5-10% of the absolute value are often not statistically significant. What matters is that the model performs consistently across both sets, suggesting our hyperparameters aren't overly tuned to the training data.
+The test and training CRPS values are essentially identical (difference of ~5 points on a scale of 260+), indicating good generalization without overfitting. In practice, CRPS differences less than 5% of the absolute value are often not statistically significant. What matters is that the model performs consistently across both sets, suggesting our hyperparameters aren't overly tuned to the data.
 
 ## Practical Insights and Recommendations
 
@@ -417,6 +416,27 @@ Be cautious about hyperparameter optimization when:
 
 4. **Convergence monitoring is critical**: Our two-tier approach (lenient for search, strict for final) prevents wasting computation on poorly converged models
 
+## Advanced Considerations and Limitations
+
+### Critical Methodological Caveats
+
+As expert data scientists, we must acknowledge that this simplified example should be extended for production systems:
+
+1. **Single Test Set Overfitting**: Optimizing on one test set risks selecting hyperparameters that work well for that specific period but not others. Production systems should use:
+   - Rolling window cross-validation
+   - Multiple hold-out periods
+   - Business-cycle-aware splits (e.g., always test on Q4 if that's your critical period)
+
+2. **Stationarity Assumptions**: This approach assumes the optimal hyperparameters are stable over time. In rapidly evolving markets, you may need:
+   - Time-varying hyperparameters
+   - Regular retraining schedules
+   - Monitoring systems to detect when parameters become stale
+
+3. **Computational Cost-Benefit**: Sometimes the marginal improvement from optimization doesn't justify the computational cost. Consider:
+   - Is a 5% CRPS improvement worth 10 hours of computation?
+   - Would that time be better spent on improving data quality or rethinking the causal structure of the model?
+   - Are stakeholders sensitive enough to notice the improvement?
+
 ### Scaling and Extensions
 
 For production deployments, consider these enhancements:
@@ -447,27 +467,6 @@ def objective_with_cv(trial):
         crps_scores.append(fold_crps)
     return np.mean(crps_scores)
 ```
-
-## Advanced Considerations and Limitations
-
-### Critical Methodological Caveats
-
-As expert data scientists, we must acknowledge that this simplified example should be extended for production systems:
-
-1. **Single Test Set Overfitting**: Optimizing on one test set risks selecting hyperparameters that work well for that specific period but not others. Production systems should use:
-   - Rolling window cross-validation
-   - Multiple hold-out periods
-   - Business-cycle-aware splits (e.g., always test on Q4 if that's your critical period)
-
-2. **Stationarity Assumptions**: This approach assumes the optimal hyperparameters are stable over time. In rapidly evolving markets, you may need:
-   - Time-varying hyperparameters
-   - Regular retraining schedules
-   - Monitoring systems to detect when parameters become stale
-
-3. **Computational Cost-Benefit**: Sometimes the marginal improvement from optimization doesn't justify the computational cost. Consider:
-   - Is a 5% CRPS improvement worth 10 hours of computation?
-   - Would that time be better spent on improving data quality or rethinking the causal structure of the model?
-   - Are stakeholders sensitive enough to notice the improvement?
 
 ### Dealing with Convergence Failures
 
