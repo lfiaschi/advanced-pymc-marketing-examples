@@ -1,25 +1,39 @@
-# Combining Optuna with PyMC-Marketing: Causal MMM Hyperparameters Optimization with Bayesian Optimization
+# Let Bayes Tune Bayes: Hyperparameter Optimization for Causal MMMs using Optuna and PyMC-Marketing
 
-You've built a Bayesian Media Mix Model. You've tried 5 different Fourier orders for seasonality. You've tested adstock lags from 4 to 12 weeks. Yet your model still claims your best-performing channel should get zero budget, and your posterior predictive checks look terrible. Your stakeholders are questioning whether this "sophisticated" Bayesian approach is worth the complexity.
+You’ve spent countless hours fitting your Bayesian Media Mix Model. You've tried 5 different Fourier orders for seasonality. You've tested adstock lags from 4 to 12 weeks. Yet your model still insists that your best-performing channel deserves zero budget, and your posterior predictive checks look terrible. Stakeholders start questioning whether this “sophisticated” Bayesian approach is worth the effort.
 
-The truth is: even the most principled causal model can fail with the wrong hyperparameters. But there's a systematic solution. In this post, we'll demonstrate how to transform weeks of manual hyperparameter tuning into hours of automated optimization by combining Optuna's Bayesian optimization with PyMC-Marketing, using CRPS (Continuous Ranked Probability Score) to properly evaluate probabilistic forecasts.
+The truth is simple: even the most principled causal model can fail if the hyperparameters are wrong.And building Bayesian models is hard. Really hard.
 
-**Important Note**: This tutorial uses synthetic data where we know the ground truth, allowing us to validate our approach. Real-world results will vary, but the methodology remains sound.
+But there’s a systematic way to fix this. In this post, we’ll show how to turn weeks of manual tuning into a repeatable optimization process—by combining Optuna’s Bayesian optimization with PyMC-Marketing, and using CRPS (Continuous Ranked Probability Score) to properly evaluate probabilistic forecasts.
+
+**Note**: This tutorial uses synthetic data where we know the ground truth, allowing us to validate our approach. Real-world results will vary, but the general approach remains sound.
 
 ## The Hyperparameter Dilemma in Causal MMM
 
-Bayesian Media Mix Models encode our understanding of marketing causality: channels have diminishing returns (saturation), effects persist over time (adstock), and seasonal patterns influence baseline sales. These aren't mere statistical constructs—they represent hypotheses about real causal mechanisms in your marketing system.
+MMMs encode our understanding of marketing causality: channels have diminishing returns (saturation), effects persist over time (adstock), and seasonal patterns influence baseline sales (seasonality). These aren’t just statistical constructs—they’re hypotheses about real causal mechanisms in your marketing system.
 
-However, even with the right causal structure, choosing the wrong hyperparameters can lead to poor predictions and misleading business recommendations. Should you use 3 or 7 Fourier components for seasonality? Is your adstock decay 4 weeks or 12? These seemingly technical choices can dramatically impact whether your model suggests increasing or cutting spend on a channel.
+However, even with the right causal structure, poor hyperparameter choices can lead to misleading conclusions and wasted computation. Should you use 3 or 7 Fourier components for seasonality? This choice may sound technical, but it can directly impact whether your model recommends cutting or increasing spend on a channel.
 
-Traditional approaches to hyperparameter selection have significant limitations:
+## Why Traditional Tuning Fails
+
+The core idea is borrowed from traditional machine learning: use a validation set and score models based on a defined error metric. However, common approaches to hyperparameter tuning often collapse under the computational weight of Bayesian inference:
 
 - **Grid search** becomes computationally prohibitive when each model fit takes 10-15 minutes with proper MCMC
-- **WAIC** evaluates in-sample fit with a complexity penalty, but doesn't measure true out-of-sample generalization
-- **Manual tuning** based on domain expertise often devolves into expensive trial and error
-- **Default values** from packages may not suit your specific business context
+- **Manual tuning** based on domain expertise often devolves into time consuming trial and error
+- **Default values** from packages may not suit your specific business context or lead to poor convergence
 
-What we need is a principled approach that efficiently explores the hyperparameter space while properly evaluating probabilistic predictions on held-out data. This is where Bayesian optimization meets proper scoring rules.
+In additon to that Bayesian models aren’t just about point predictions—they produce full posterior distributions, capturing uncertainty. That means traditional error metrics like RMSE or MAE don’t tell the full story.
+
+We need a principled and efficient way to explore the hyperparameter space—one that respects the probabilistic nature of Bayesian models.
+
+This is where **Bayesian optimization** meets **proper scoring rules**. Bayesian optimization implemented via Optuna efficiently explores the hyperparameter space using prior information from previous trials, while proper scoring rules such as CRPS provide a principled way to evaluate probabilistic forecasts on the test set. Together, they form a systematic loop:
+
+Propose new hyperparameters (adstock decay, Fourier order, etc.)
+
+1. Fit the model with PyMC-Marketing
+2. Evaluate the predictive distribution on held-out data using CRPS
+3. Update the search strategy to focus on promising regions
+4. Within a few dozen iterations, this approach can outperform weeks of manual tuning—while remaining fully Bayesian and grounded in uncertainty-aware evaluation.
 
 ## CRPS: The Right Metric for Probabilistic Forecasts
 
@@ -132,6 +146,12 @@ FINAL_ESS_THRESHOLD = 400            # Minimum effective sample size
 ```
 
 **Note**: These reduced settings during optimization are a calculated risk. We accept potentially unreliable individual estimates in exchange for exploring more hyperparameter combinations. Always validate your final model with full MCMC settings.
+
+## What You Can (and Shouldn’t) Tune
+
+Unlike traditional ML not all parameters are fair game for optimization in Baysian modeling. In an MMM, some hyperparameters define the structure of your causal assumptions, while others can safely be treated as knobs to optimize for predictive performance. For instance, you can tune the Fourier order controlling seasonal complexity, the adstock lag length, and even the functional form of effects such as adstock or saturation (e.g., Hill vs. logistic). These choices shape how the model captures marketing dynamics without altering its causal foundations.
+
+However, you should not use Bayesian optimization to select *priors*. Priors encode external beliefs and domain knowledge—such as expected ROI ranges or plausible decay rates—and optimizing them purely for predictive accuracy defeats the Bayesian purpose. In other words, use Bayesian optimization to make your model smarter, not to make it forget what it’s supposed to believe.
 
 ## Implementation: The Complete Playbook
 
@@ -371,7 +391,7 @@ This CRPS-based optimization is most valuable when:
 
 1. **You have sufficient data**: At least 100+ observations, ideally 2+ years for seasonal patterns
 2. **Multiple hyperparameters interact**: Fourier orders, adstock lags, and saturation parameters have complex relationships
-3. **Computational time is available**: Even with optimization, expect several hours of computation
+3. **Computational time is available**: Even with optimization, expect up to several hours of computation for the most complex models
 4. **Business context is stable**: If your market changes rapidly, optimized parameters may quickly become outdated
 
 ### When NOT to Use This Approach
@@ -380,8 +400,8 @@ Be cautious about hyperparameter optimization when:
 
 - **Data is limited** (<52 weeks): Risk of overfitting to noise
 - **Market dynamics are changing**: Recent disruptions make historical patterns unreliable
-- **Quick insights needed**: Sometimes "good enough" with defaults beats perfect after extensive tuning
-- **Causal structure is uncertain**: Fix your model specification before optimizing hyperparameters
+- **Quick insights needed**: In Baysian statistics "good enough" with defaults beats perfect after extensive tuning
+- **Causal structure is uncertain**: Fix your model specification and priors before optimizing hyperparameters
 
 ### Key Lessons from Our Synthetic Data Example
 
@@ -428,7 +448,7 @@ def objective_with_cv(trial):
 
 ### Critical Methodological Caveats
 
-As senior data scientists, we must acknowledge several limitations of this approach:
+As expert data scientists, we must acknowledge that this simplified example should be extended for production systems:
 
 1. **Single Test Set Overfitting**: Optimizing on one test set risks selecting hyperparameters that work well for that specific period but not others. Production systems should use:
    - Rolling window cross-validation
@@ -437,30 +457,22 @@ As senior data scientists, we must acknowledge several limitations of this appro
 
 2. **Stationarity Assumptions**: This approach assumes the optimal hyperparameters are stable over time. In rapidly evolving markets, you may need:
    - Time-varying hyperparameters
-   - Regular reoptimization schedules
+   - Regular retraining schedules
    - Monitoring systems to detect when parameters become stale
 
 3. **Computational Cost-Benefit**: Sometimes the marginal improvement from optimization doesn't justify the computational cost. Consider:
    - Is a 5% CRPS improvement worth 10 hours of computation?
-   - Would that time be better spent on improving data quality or causal structure?
+   - Would that time be better spent on improving data quality or rethinking the causal structure of the model?
    - Are stakeholders sensitive enough to notice the improvement?
 
 ### Dealing with Convergence Failures
 
 When trials frequently fail convergence checks, the problem often isn't the hyperparameters but the model itself:
 
-1. **Model Misspecification**: Poor convergence often signals that your causal assumptions don't match the data
-2. **Identification Issues**: Some parameter combinations may be fundamentally unidentifiable
+1. **Model Misspecification**: Poor convergence often signals that the structure of the model might be overly complicated and don't match your data
+2. **Identification Issues**: Some parameter combinations may be fundamentally unidentifiable without strong priors
 3. **Data Quality**: Outliers or data errors can cause convergence failures regardless of hyperparameters
 4. **Prior-Data Conflict**: When priors strongly disagree with data, no amount of tuning will help
-
-### Statistical Significance vs. Practical Significance
-
-Remember that statistically optimal hyperparameters may not be practically important:
-
-- A CRPS improvement from 265 to 260 is likely within noise
-- Business stakeholders care about decision changes, not metric improvements
-- Always validate that optimized parameters lead to meaningfully different business recommendations
 
 ## Conclusion: A Tool in Your MMM Toolkit
 
