@@ -74,29 +74,45 @@ The forecasts track actual patterns with impressive fidelity, capturing both sea
 
 ## The Mathematics of Error Propagation
 
-To understand how control forecast errors affect MMM predictions, we need to examine the mathematical relationship. In our MMM, the prediction decomposes as:
+To understand how control forecast errors affect MMM predictions, we need to examine the mathematical relationship. The key insight is surprisingly simple: errors in control variables propagate to your sales predictions proportionally to how much those controls matter to your model.
+
+Let's build this understanding step by step. In our MMM, each prediction combines two components:
 
 $$\hat{y} = m + \gamma^{\top} x$$
 
-where $m$ represents media effects and $\gamma^{\top} x$ captures control variable contributions. When using forecasted controls $\hat{x}$, the prediction error changes by:
+Here, $m$ represents the contribution from media channels (TV, search, etc.), while $\gamma^{\top} x$ captures the influence of control variables like employment rates and temperature. The vector $\gamma$ contains the coefficients that quantify how much each control affects sales, and $x$ contains the control values themselves.
+
+When we forecast into the future, we replace the true controls $x$ with our Chronos2 predictions $\hat{x}$. This introduces an error that cascades through the model:
 
 $$\Delta \hat{y} = \gamma^{\top} (\hat{x} - x)$$
 
-This leads to a deterministic bound on the Mean Absolute Percentage Error (MAPE) degradation:
+Think of this as a multiplication effect: if a control variable has a large coefficient (it matters a lot to sales) AND we forecast it poorly, the error gets amplified. Conversely, even large forecast errors in unimportant controls barely affect the final prediction.
+
+This relationship leads to a practical rule of thumb. The additional MAPE introduced by using forecasted controls is bounded by:
 
 $$\mathbb{E}[|\Delta \text{MAPE}|] \leq \sum_{j=1}^{p} w_j \cdot \text{MAPE}_j$$
 
-where $\text{MAPE}_j$ is the forecast error for control $j$ and $w_j = \mathbb{E}[|\gamma_j| \cdot |x_j|/|y|]$ represents its relative importance.
+where $\text{MAPE}_j$ is the forecast accuracy for control $j$ and $w_j = \mathbb{E}[|\gamma_j| \cdot |x_j|/|y|]$ represents its relative importance—essentially, what fraction of sales variation this control explains.
+
+**The Practitioner's Rule**: Control MAPE × Control Share ≈ Added MMM MAPE
+
+For example, if temperature and employment together explain 30% of your sales variation, and you forecast them with 10% MAPE, expect roughly 3% additional error in your sales predictions. This simple multiplication gives you a quick way to assess whether your control forecasts are good enough for reliable planning.
 
 ![Impact of Forecast Error](images/chronos_mmm/03_forecast_error_impact.png)
 *Figure 3: How forecast uncertainty compounds when making MMM predictions. The top panels show sales predictions and errors over time, while bottom panels reveal the additional error introduced by using forecasted rather than actual controls.*
 
-The empirical results are encouraging:
+The empirical results validate our mathematical framework:
 - **With actual controls**: MAPE of 2.89%, RMSE of $1,517
 - **With forecasted controls**: MAPE of 3.23%, RMSE of $1,642
 - **Degradation**: Only +0.34% MAPE increase despite 52-week ahead forecasts
 
-This minimal degradation demonstrates the robustness of the hybrid approach. Even with the inherent uncertainty of long-range forecasts, the final predictions remain highly accurate.
+Let's break down why the degradation is so small. In our dataset:
+- Control variables (temperature and employment) explain roughly 15% of sales variation
+- Chronos2 forecasts these controls with ~3% MAPE on average
+- Applying our rule: 15% × 3% = 0.45% expected MAPE increase
+- Actual increase: 0.34%—even better than our conservative estimate!
+
+This minimal degradation demonstrates the robustness of the hybrid approach. Even with the inherent uncertainty of long-range forecasts, the final predictions remain highly accurate because the controls, while important, don't dominate the sales dynamics—media spend remains the primary driver.
 
 ## The Production Playbook
 
@@ -151,7 +167,7 @@ Track these metrics in production:
 - Posterior predictive checks for MMM assumptions
 
 ![MAPE Degradation Analysis](images/chronos_mmm/04_mape_degradation_curve.png)
-*Figure 4: Theoretical relationship between control variable forecast error and MMM prediction degradation. This helps set stakeholder expectations—if economic forecasts have 10% MAPE, expect roughly 2-3% additional error in sales predictions.*
+*Figure 4: The practitioner's rule in action: how control forecast errors translate to MMM prediction errors. The curve shows that even with 10% MAPE in economic forecasts, sales predictions only degrade by 2-3% when controls explain 20-30% of variance—making this approach viable for real-world planning.*
 
 ## When This Architecture Shines
 
